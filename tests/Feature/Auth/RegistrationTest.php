@@ -31,8 +31,10 @@ class RegistrationTest extends TestCase
             'address' => 'テスト',
             'phone_number' => '00000000000',
         ]);
+        
 
         $this->assertAuthenticated();
+
         $response->assertRedirect('/home');
     }
 }
