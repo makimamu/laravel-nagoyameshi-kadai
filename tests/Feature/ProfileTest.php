@@ -25,6 +25,7 @@ class ProfileTest extends TestCase
     {
         $user = User::factory()->create();
 
+        
         $response = $this
             ->actingAs($user)
             ->patch('/profile', [
