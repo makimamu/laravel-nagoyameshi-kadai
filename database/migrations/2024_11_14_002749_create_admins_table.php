@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('password');
-            $table->boolean('is_admin');
+            $table->boolean('is_admin')->default(true); // デフォルト値を設定
             $table->rememberToken();
             $table->timestamps();
         });
@@ -28,4 +28,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('admins');
     }
+
+
+
 };

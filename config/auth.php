@@ -40,16 +40,25 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
         'admin' => [
-        'driver' => 'session',
-        'provider' => 'admins',
+            'driver' => 'session',
+            'provider' => 'admins',
         ],
 
-        'defaults' => [
-    'guard' => 'web',
-    'passwords' => 'users',
+        //'defaults' => [
+            //'guard' => 'web',
+            //'passwords' => 'users',
+        //],
+        //'guards' => [
+            //'admin' => [
+                //'driver' => 'session', // セッションを使った認証
+                //'provider' => 'admins', // 下で定義する'admins'プロバイダーを利用
+            //],
+            // 他のガード (例: web, api) はそのまま
+        //],
+
     ],
-],
 
 
     /*
@@ -75,10 +84,10 @@ return [
             'model' => App\Models\User::class,
         ],
         'admins' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Admin::class,
+            'driver' => 'eloquent', // Eloquentモデルを使用
+            'model' => App\Models\Admin::class, // Adminモデルを指定
         ],
-            
+
 
         // 'users' => [
         //     'driver' => 'database',

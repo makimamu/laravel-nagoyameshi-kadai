@@ -4,25 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddDefaultValueToIsAdminColumnInAdminsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::table('admins', function (Blueprint $table) {
-            //
+            $table->boolean('is_admin')->default(false)->change(); // デフォルト値を設定
         });
     }
-
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+
+    public function down()
     {
         Schema::table('admins', function (Blueprint $table) {
-            //
+            $table->boolean('is_admin')->default(null)->change(); // 変更を元に戻す
         });
     }
-};
+}

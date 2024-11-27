@@ -2,21 +2,15 @@
 
 namespace Tests\Feature\Admin\Auth;
 
-
 use App\Models\Admin;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    
     use RefreshDatabase;
 
     public function test_login_screen_can_be_rendered(): void
@@ -28,17 +22,21 @@ class AuthenticationTest extends TestCase
 
     public function test_admins_can_authenticate_using_the_login_screen(): void
     {
+        // 管理者データを作成
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        //$admin->is_admin = true;
         $admin->save();
+        
+            //'is_admin' => true, // 管理者フラグを設定
 
+        // ログインを実行
         $response = $this->post('/admin/login', [
             'email' => $admin->email,
             'password' => 'nagoyameshi',
         ]);
 
+        // ログイン成功を確認
         $this->assertTrue(Auth::guard('admin')->check());
         $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);
     }
@@ -48,28 +46,29 @@ class AuthenticationTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        //$admin->is_admin = true;
         $admin->save();
+
 
         $this->post('/admin/login', [
             'email' => $admin->email,
-            'password' => 'wrong-password',
+            'password' => 'wrong-password', // 間違ったパスワード
         ]);
 
-        $this->assertGuest();
+        $this->assertGuest(); // ゲスト状態を確認
     }
+
     public function test_admins_can_logout(): void
     {
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        //$admin->is_admin = true;
         $admin->save();
-
+        //'is_admin' => true,
+        
+        // ログイン状態にする
         $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
 
-        $this->assertGuest();
-        $response->assertRedirect('/');
+        $this->assertGuest(); // ログアウト後はゲスト状態を確認
+        $response->assertRedirect('/'); // リダイレクトを確認
     }
-
 }

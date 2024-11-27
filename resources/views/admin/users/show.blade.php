@@ -130,6 +130,5 @@
                 </div>
             </div>
         </div>
-        <a href="{{ route('admin.users.index') }}">一覧に戻る</a>
     </div>
 @endsection

@@ -20,7 +20,7 @@ class AdminFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(), // Fakerを使ってランダムな名前を生成
+            //'name' => $this->faker->name(), // Fakerを使ってランダムな名前を生成
             'kana' => $this->faker->kanaName(),
             'email' => $this->faker->unique()->safeEmail(), // Fakerでユニークなメールアドレスを生成
             'password' => Hash::make('password'), // ハッシュ化したデフォルトパスワード

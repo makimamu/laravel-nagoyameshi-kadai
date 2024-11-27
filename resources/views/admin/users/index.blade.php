@@ -13,7 +13,6 @@
                             <button type="submit" class="btn text-white shadow-sm nagoyameshi-btn">検索</button>
                         </div>
                     </form>
-
                 </div>
 
                 <div>

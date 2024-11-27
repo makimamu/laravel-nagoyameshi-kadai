@@ -25,7 +25,7 @@ class UserController extends Controller
             $total = $users->total();
         } else {
             $users = User::paginate(15); // ページネーション
-            $total = 0; // 総件数
+            $total = User::count(); // 総件数
             $keyword = null;
         }
         return view('admin.users.index', compact('users', 'keyword', 'total'));
