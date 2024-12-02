@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\RestaurantController;
 
 
 /*
@@ -45,3 +46,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // 会員詳細ページのルート
     Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+
+//管理者側の店舗管理
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
+    Route::get('restaurants/create', [RestaurantController::class, 'create'])->name('restaurants.create');
+    Route::post('restaurants', [RestaurantController::class, 'store'])->name('restaurants.store');
+    Route::get('restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
+    Route::get('restaurants/{restaurant}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
+    Route::put('restaurants/{restaurant}', [RestaurantController::class, 'update'])->name('restaurants.update');
+    Route::delete('restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
+});

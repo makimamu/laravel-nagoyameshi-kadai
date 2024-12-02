@@ -29,11 +29,11 @@
         @include('layouts.header')
 
         <main>
-            @if (Auth::check())
+            @if (Auth::guard('admin')->check())
                 <div class="container py-4 nagoyameshi-container">
                     <div class="row justify-content-center">
-                        @include('layouts.sidebar')
-                        @yield('content')
+                        @include('layouts.sidebar'){{-- サイドバーを表示 --}}
+                        @yield('content'){{-- メインコンテンツ --}}
                     </div>
                 </div>
             @else
