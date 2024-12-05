@@ -12,6 +12,7 @@ use APP\Models\User;
  */
 class AdminFactory extends Factory
 {
+    
     /**
      * Define the model's default state.
      *
