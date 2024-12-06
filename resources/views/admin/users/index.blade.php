@@ -4,6 +4,7 @@
     <div class="col container">
         <div class="row justify-content-center">
             <div class="col-xxl-9 col-xl-10 col-lg-11">
+                
                 <h1 class="mb-4 text-center">会員一覧</h1>
 
                 <div class="d-flex justify-content-between align-items-end">
@@ -12,8 +13,10 @@
                             <input type="text" class="form-control" placeholder="氏名・フリガナで検索" name="keyword" value="{{ $keyword }}">
                             <button type="submit" class="btn text-white shadow-sm nagoyameshi-btn">検索</button>
                         </div>
+                        <div class="col-2 nagoyameshi-admin-sidebar"></div>
                     </form>
                 </div>
+
 
                 <div>
                     <p class="mb-0">計{{ number_format($total) }}件</p>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestaurantsTable extends Migration
+class CreateRestaurants extends Migration
 {
     public function up()
     {
@@ -21,11 +21,9 @@ class CreateRestaurantsTable extends Migration
             $table->time('closing_time'); // 閉店時間
             $table->integer('seating_capacity')->unsigned(); // 座席数
             $table->timestamps(); // 作成日時・更新日時
-
-            $table->string('image_name')->nullable();// image_nameカラムを設定する
+            //$table->string('image_name')->nullable();// image_nameカラムを設定する
 });
 }
-
 
     public function down()
     {

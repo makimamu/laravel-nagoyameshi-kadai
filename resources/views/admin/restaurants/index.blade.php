@@ -17,7 +17,7 @@
                     <a href="{{ route('admin.restaurants.create') }}" class="btn text-white shadow-sm mb-3 nagoyameshi-btn">＋ 新規登録</a>
                 </div>
 
-                @if (session('flash_message'));
+                @if (session('flash_message'))
                     <div class="alert alert-info" role="alert">
                         <p class="mb-0">{{ session('flash_message') }}</p>
                     </div>
@@ -51,10 +51,9 @@
                 </table>
 
                 <div class="d-flex justify-content-center">
-                    <!-- ページネーション -->
                     {{ $restaurants->appends(request()->query())->links() }}
                 </div>
-            </div>
+            </d>
         </div>
     </div>
 @endsection
