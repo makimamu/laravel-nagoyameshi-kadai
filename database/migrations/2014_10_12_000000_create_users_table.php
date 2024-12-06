@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
 
             $table->id();// IDカラム
-
             $table->string('name');//ユーザー名(漢字)
             $table->string('kana');//ユーザー名(ふりがな)
             $table->string('email')->unique(); // メールアドレス（ユニーク）
@@ -25,7 +24,6 @@ return new class extends Migration
             $table->string('phone_number'); // 電話番号
             $table->date('birthday')->nullable(); // 生年月日（nullable）
             $table->string('occupation')->nullable(); // 職業（nullable）
-
             $table->rememberToken(); // ログイン状態を保持するトークン
             $table->timestamps(); // 作成日時、更新日時 
         });
