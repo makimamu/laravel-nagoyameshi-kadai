@@ -15,15 +15,34 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validateWithBag('updatePassword', [
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
-        return back()->with('status', 'password-updated');
-    }
+public function update(Request $request)
+{
+    $request->validate([
+        'current_password' => ['required', function ($attribute, $value, $fail) {
+            if (!Hash::check($value, auth()->user()->password)) {
+                $fail('The current password is incorrect.');
+            }
+        }],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ]);
+
+    // パスワードの更新処理
+    auth()->user()->update([
+        'password' => Hash::make($request->password),
+    ]);
 }
+        //$validated = $request->validateWithBag('updatePassword', [
+            //'current_password' => ['required', 'current_password'],
+            //'password' => ['required', Password::defaults(), 'confirmed'],
+        //]);
+
+        //$request->user()->update([
+            //'password' => Hash::make($validated['password']),
+        //]);
+
+        //return back()->with('status', 'password-updated');

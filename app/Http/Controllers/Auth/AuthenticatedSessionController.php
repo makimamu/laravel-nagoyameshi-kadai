@@ -29,7 +29,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // 認証後のリダイレクト処理をここで実行
+        return $this->authenticated($request, Auth::user());
+    }
+
+    /**
+     * Handle after successful authentication.
+     */
+    protected function authenticated(Request $request, $user): RedirectResponse
+    {
+        if ($user->is_admin) {
+            return redirect(RouteServiceProvider::ADMIN_HOME); // 管理者の場合
+        }
+
+        return redirect(RouteServiceProvider::HOME); // 一般ユーザーの場合
     }
 
     /**

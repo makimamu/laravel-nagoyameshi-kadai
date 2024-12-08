@@ -31,7 +31,17 @@ class UserFactory extends Factory
             'postal_code' => fake()->postcode(),
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),
-            'is_admin' => true, // 初期値をfalseに設定
+            'is_admin' => false, // 一般ユーザー
         ];
     }
-}
+
+
+        public function admin() // 管理者用の状態
+        {
+            return $this->state(function (array $attributes) {
+                return [
+                    'is_admin' => true,//管理者
+                ];
+            });
+        }
+    }

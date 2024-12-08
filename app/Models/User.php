@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'birthday',
         'occupation',
+        'is_admin', // 追加
     ];
 
     /**
@@ -48,5 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        // または、型キャストを設定
+    'is_admin' => 'boolean', // 追加
     ];
 }

@@ -12,22 +12,32 @@ class RestaurantTest extends TestCase
     use RefreshDatabase;
 
     public function test_admin_can_access_restaurant_index()
-    {
-        $admin = User::factory()->create(['is_admin' => true]);
+{
+    // 管理者ユーザーを作成
+    $admin = User::factory()->create([
+        'is_admin' => true,
+    ]);
 
-        $response = $this->actingAs($admin)->get(route('admin.restaurants.index'));
+    // 管理者ガードで認証
+    $response = $this->actingAs($admin, 'admin')->get(route('admin.restaurants.index'));
 
-        $response->assertStatus(200);
-    }
+    // ステータスコード200を確認
+    $response->assertStatus(200);
+}
 
-    public function test_non_admin_cannot_access_restaurant_index()
-    {
-        $user = User::factory()->create();
+public function test_non_admin_cannot_access_restaurant_index()
+{
+    // 非管理者ユーザーを作成
+    $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('admin.restaurants.index'));
+    // 非管理者でレストラン一覧ページにアクセス
+    $response = $this->actingAs($user)->get(route('admin.restaurants.index'));
 
-        $response->assertStatus(403);  // Forbidden
-    }
+    // リダイレクトが発生することを確認
+    $response->assertStatus(302);  // リダイレクトが発生
+    $response->assertRedirect('/login');  // ログインページにリダイレクトされることを確認
+}
+
+}
 
     // 他のアクションのテストも同様に記述します
-}

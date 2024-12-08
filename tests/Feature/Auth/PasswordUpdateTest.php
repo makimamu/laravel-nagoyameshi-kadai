@@ -37,15 +37,16 @@ class PasswordUpdateTest extends TestCase
             'password' => Hash::make('old-password'),
         ]);
 
-        $this->actingAs($user);
-
-        $response = $this->from('/user/profile')->put('/user/password', [
+        // 誤った current_password を送信
+        $response = $this->actingAs($user)->post(route('password.update'),[
             'current_password' => 'wrong-password',
             'password' => 'new-password',
             'password_confirmation' => 'new-password',
         ]);
-
+        //エラーメッセージがセッションにセットされていることを確認
         $response->assertSessionHasErrors('current_password');
+        // ユーザーのパスワードが変更されていないことを確認
         $this->assertTrue(Hash::check('old-password', $user->fresh()->password));
+
     }
 }

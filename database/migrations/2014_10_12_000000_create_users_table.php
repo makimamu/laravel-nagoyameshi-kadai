@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('kana');//ユーザー名(ふりがな)
             $table->string('email')->unique(); // メールアドレス（ユニーク）
             $table->timestamp('email_verified_at')->nullable(); // メールアドレス認証（nullable）
+            $table->boolean('is_admin')->default(false); // 管理者カラム
             $table->string('password'); // パスワード
             $table->string('postal_code'); // 郵便番号
             $table->string('address'); // 住所
