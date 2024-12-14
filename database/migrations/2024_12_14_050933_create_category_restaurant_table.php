@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('category_restaurant', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('restaurant_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-        $table->timestamps();
-    });
+    if (!Schema::hasTable('category_restaurant')) {
+        Schema::create('category_restaurant', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('restaurant_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+        });
+    }
 }
 
     /**

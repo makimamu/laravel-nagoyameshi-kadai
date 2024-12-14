@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
@@ -15,26 +14,25 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        // 入力バリデーション
+        $request->validate([
+            'current_password' => ['required', function ($attribute, $value, $fail) {
+                // 現在のパスワードが一致しない場合
+                if (!Hash::check($value, auth()->user()->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
+            'password' => ['required', 'string', 'min:8', 'confirmed'], // 新しいパスワードのバリデーション
+        ]);
 
-        use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+        // パスワードの更新
+        auth()->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
 
-public function update(Request $request)
-{
-    $request->validate([
-        'current_password' => ['required', function ($attribute, $value, $fail) {
-            if (!Hash::check($value, auth()->user()->password)) {
-                $fail('The current password is incorrect.');
-            }
-        }],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ]);
-
-    // パスワードの更新処理
-    auth()->user()->update([
-        'password' => Hash::make($request->password),
-    ]);
+        // パスワード更新成功後のリダイレクト
+        return back()->with('status', 'password-updated');
+    }
 }
         //$validated = $request->validateWithBag('updatePassword', [
             //'current_password' => ['required', 'current_password'],
