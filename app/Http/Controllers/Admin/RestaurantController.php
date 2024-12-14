@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category; // ここを追加
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
-class RestaurantController extends Controller//class.子クラス.extends.親クラス【継承】
+class RestaurantController extends Controller
 {
     // 店舗一覧ページ
     public function index(Request $request)
@@ -33,45 +34,54 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
     // 店舗登録ページ
     public function create()
     {
-        return view('admin.restaurants.create');
+        $categories = Category::all(); // カテゴリを取得
+        return view('admin.restaurants.create', compact('categories'));
     }
 
     // 店舗登録機能
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg,webp|max:2048',
-            'description' => 'required',
-            'lowest_price' => 'required|integer|min:0|lte:highest_price',
-            'highest_price' => 'required|integer|min:0|gte:lowest_price',
-            'postal_code' => 'required|digits:7',
-            'address' => 'required',
-            'opening_time' => 'required|before:closing_time',
-            'closing_time' => 'required|after:opening_time',
-            'seating_capacity' => 'required|integer|min:0',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg,webp|max:2048',
+        'description' => 'required',
+        'lowest_price' => 'required|integer|min:0|lte:highest_price',
+        'highest_price' => 'required|integer|min:0|gte:lowest_price',
+        'postal_code' => 'required|digits:7',
+        'address' => 'required',
+        'opening_time' => 'required|before:closing_time',
+        'closing_time' => 'required|after:opening_time',
+        'seating_capacity' => 'required|integer|min:0',
+        'category_ids' => 'nullable|array', // カテゴリが配列であることをバリデーション
+        'category_ids.*' => 'exists:categories,id', // 各要素がcategoriesテーブルに存在
+    ]);
 
-        $restaurant = new Restaurant($validated);
+    $restaurant = new Restaurant($validated);
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/restaurants');
-            $restaurant->image = basename($path);
-        } else {
-            $restaurant->image = '';
-        }
-
-        $restaurant->save();
-
-        return redirect()
-            ->route('admin.restaurants.index')
-            ->with('flash_message', '店舗を登録しました。');
+    // 画像の保存処理
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('public/restaurants');
+        $restaurant->image = basename($path);
+    } else {
+        $restaurant->image = '';
     }
+
+    $restaurant->save();
+
+    // カテゴリの紐付け処理
+    $category_ids = $request->input('category_ids', []); // フォームから送信されたカテゴリID
+    $restaurant->categories()->sync($category_ids); // 中間テーブルに保存
+
+    return redirect()
+        ->route('admin.restaurants.index')
+        ->with('flash_message', '店舗を登録しました。');
+}
 
     // 店舗編集ページ
     public function edit(Restaurant $restaurant)
     {
-        return view('admin.restaurants.edit', compact('restaurant'));
+        $categories = Category::all(); // 編集画面用にカテゴリを取得
+        return view('admin.restaurants.edit', compact('restaurant', 'categories'));
     }
 
     // 店舗更新機能
@@ -88,22 +98,28 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
             'opening_time' => 'required|before:closing_time',
             'closing_time' => 'required|after:opening_time',
             'seating_capacity' => 'required|integer|min:0',
+            'category_ids' => 'nullable|array', // バリデーション追加
+            'category_ids.*' => 'exists:categories,id', // カテゴリIDが正当か確認
         ]);
-
+    
         $restaurant->fill($validated);
-
+    
+        // 画像の保存処理
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/restaurants');
             $restaurant->image = basename($path);
         }
-
+    
         $restaurant->save();
-
+    
+        // カテゴリの紐付け処理
+        $category_ids = $request->input('category_ids', []); // 修正済み
+        $restaurant->categories()->sync($category_ids);
+    
         return redirect()
             ->route('admin.restaurants.index')
             ->with('flash_message', '店舗を更新しました。');
     }
-
     // 店舗削除機能
     public function destroy(Restaurant $restaurant)
     {
