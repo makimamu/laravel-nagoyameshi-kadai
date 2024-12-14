@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -15,34 +14,26 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        // 入力値のバリデーション
+        $request->validate([
+            'current_password' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    // 現在のパスワードが正しいか確認
+                    if (!Hash::check($value, $request->user()->password)) {
+                        $fail(__('The current password is incorrect.'));
+                    }
+                },
+            ],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
 
-        use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+        // パスワードを更新
+        $request->user()->update([
+            'password' => Hash::make($request->input('password')),
+        ]);
 
-public function update(Request $request)
-{
-    $request->validate([
-        'current_password' => ['required', function ($attribute, $value, $fail) {
-            if (!Hash::check($value, auth()->user()->password)) {
-                $fail('The current password is incorrect.');
-            }
-        }],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ]);
-
-    // パスワードの更新処理
-    auth()->user()->update([
-        'password' => Hash::make($request->password),
-    ]);
+        // 成功後のリダイレクト
+        return back()->with('status', __('Password updated successfully.'));
+    }
 }
-        //$validated = $request->validateWithBag('updatePassword', [
-            //'current_password' => ['required', 'current_password'],
-            //'password' => ['required', Password::defaults(), 'confirmed'],
-        //]);
-
-        //$request->user()->update([
-            //'password' => Hash::make($validated['password']),
-        //]);
-
-        //return back()->with('status', 'password-updated');
