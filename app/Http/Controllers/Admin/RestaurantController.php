@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category; // ここを追加
 use App\Models\Restaurant;
+use App\Models\RegularHoliday;
 use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
@@ -35,29 +36,38 @@ class RestaurantController extends Controller
     public function create()
     {
         $categories = Category::all(); // カテゴリを取得
-        return view('admin.restaurants.create', compact('categories'));
+        $regular_holidays = RegularHoliday::all(); // 定休日を取得
+
+        return view('admin.restaurants.create', compact('categories', 'regular_holidays'));
     }
 
     // 店舗登録機能
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg,webp|max:2048',
-        'description' => 'required',
-        'lowest_price' => 'required|integer|min:0|lte:highest_price',
-        'highest_price' => 'required|integer|min:0|gte:lowest_price',
-        'postal_code' => 'required|digits:7',
-        'address' => 'required',
-        'opening_time' => 'required|before:closing_time',
-        'closing_time' => 'required|after:opening_time',
-        'seating_capacity' => 'required|integer|min:0',
-        'category_ids' => 'nullable|array', // カテゴリが配列であることをバリデーション
-        'category_ids.*' => 'exists:categories,id', // 各要素がcategoriesテーブルに存在
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg,webp|max:2048',
+            'description' => 'required',
+            'lowest_price' => 'required|integer|min:0|lte:highest_price',
+            'highest_price' => 'required|integer|min:0|gte:lowest_price',
+            'postal_code' => 'required|digits:7',
+            'address' => 'required',
+            'opening_time' => 'required|before:closing_time',
+            'closing_time' => 'required|after:opening_time',
+            'seating_capacity' => 'required|integer|min:0',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
+            'regular_holiday_ids' => 'nullable|array',
+            'regular_holiday_ids.*' => 'exists:regular_holidays,id',
+        ]);
 
     $restaurant = new Restaurant($validated);
 
+        // 画像の保存処理
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('public/restaurants');
+            $restaurant->image = basename($path);
+        }
     // 画像の保存処理
     if ($request->hasFile('image')) {
         $path = $request->file('image')->store('public/restaurants');
@@ -66,6 +76,15 @@ public function store(Request $request)
         $restaurant->image = '';
     }
 
+        $restaurant->save();
+
+        // カテゴリの紐付け処理
+        $category_ids = $request->input('category_ids', []);
+        $restaurant->categories()->sync($category_ids);
+
+        // 定休日の紐付け処理
+        $regular_holiday_ids = $request->input('regular_holiday_ids', []);
+        $restaurant->regularHolidays()->sync($regular_holiday_ids);
     $restaurant->save();
 
     // カテゴリの紐付け処理
@@ -80,8 +99,11 @@ public function store(Request $request)
     // 店舗編集ページ
     public function edit(Restaurant $restaurant)
     {
+        $categories = Category::all();
+        $regular_holidays = RegularHoliday::all();
+
         $categories = Category::all(); // 編集画面用にカテゴリを取得
-        return view('admin.restaurants.edit', compact('restaurant', 'categories'));
+        return view('admin.restaurants.edit', compact('restaurant', 'categories', 'regular_holidays', 'categories'));
     }
 
     // 店舗更新機能
@@ -98,11 +120,17 @@ public function store(Request $request)
             'opening_time' => 'required|before:closing_time',
             'closing_time' => 'required|after:opening_time',
             'seating_capacity' => 'required|integer|min:0',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
+            'regular_holiday_ids' => 'nullable|array',
+            'regular_holiday_ids.*' => 'exists:regular_holidays,id',
             'category_ids' => 'nullable|array', // バリデーション追加
             'category_ids.*' => 'exists:categories,id', // カテゴリIDが正当か確認
         ]);
     
         $restaurant->fill($validated);
+
+        // 画像の保存処理
     
         // 画像の保存処理
         if ($request->hasFile('image')) {
@@ -111,6 +139,15 @@ public function store(Request $request)
         }
     
         $restaurant->save();
+
+        // カテゴリの紐付け処理
+        $category_ids = $request->input('category_ids', []);
+        $restaurant->categories()->sync($category_ids);
+
+        // 定休日の紐付け処理
+        $regular_holiday_ids = $request->input('regular_holiday_ids', []);
+        $restaurant->regularHolidays()->sync($regular_holiday_ids);
+
     
         // カテゴリの紐付け処理
         $category_ids = $request->input('category_ids', []); // 修正済み

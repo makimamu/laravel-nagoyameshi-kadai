@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
@@ -14,26 +13,33 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        // 入力値のバリデーション
+        // 入力バリデーション
         $request->validate([
-            'current_password' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    // 現在のパスワードが正しいか確認
-                    if (!Hash::check($value, $request->user()->password)) {
-                        $fail(__('The current password is incorrect.'));
-                    }
-                },
-            ],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'current_password' => ['required', function ($attribute, $value, $fail) {
+                // 現在のパスワードが一致しない場合
+                if (!Hash::check($value, auth()->user()->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
+            'password' => ['required', 'string', 'min:8', 'confirmed'], // 新しいパスワードのバリデーション
         ]);
 
-        // パスワードを更新
-        $request->user()->update([
-            'password' => Hash::make($request->input('password')),
+        // パスワードの更新
+        auth()->user()->update([
+            'password' => Hash::make($request->password),
         ]);
 
-        // 成功後のリダイレクト
-        return back()->with('status', __('Password updated successfully.'));
+        // パスワード更新成功後のリダイレクト
+        return back()->with('status', 'password-updated');
     }
 }
+        //$validated = $request->validateWithBag('updatePassword', [
+            //'current_password' => ['required', 'current_password'],
+            //'password' => ['required', Password::defaults(), 'confirmed'],
+        //]);
+
+        //$request->user()->update([
+            //'password' => Hash::make($validated['password']),
+        //]);
+
+        //return back()->with('status', 'password-updated');
