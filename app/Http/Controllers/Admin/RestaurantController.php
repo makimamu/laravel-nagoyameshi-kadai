@@ -120,12 +120,10 @@ class RestaurantController extends Controller
             'opening_time' => 'required|before:closing_time',
             'closing_time' => 'required|after:opening_time',
             'seating_capacity' => 'required|integer|min:0',
-            'category_ids' => 'nullable|array',
-            'category_ids.*' => 'exists:categories,id',
+            'category_ids' => 'nullable|array',// バリデーション追加
+            'category_ids.*' => 'exists:categories,id',// カテゴリIDが正当か確認
             'regular_holiday_ids' => 'nullable|array',
             'regular_holiday_ids.*' => 'exists:regular_holidays,id',
-            'category_ids' => 'nullable|array', // バリデーション追加
-            'category_ids.*' => 'exists:categories,id', // カテゴリIDが正当か確認
         ]);
     
         $restaurant->fill($validated);
