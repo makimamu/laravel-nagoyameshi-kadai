@@ -60,4 +60,8 @@ class RegisteredUserController extends Controller
 
         return redirect(RouteServiceProvider::HOME);
     }
+    protected function registered(Request $request, $user)
+{
+    return redirect('/verify-email');
+}
 }
