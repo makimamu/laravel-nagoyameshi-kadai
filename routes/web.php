@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\Auth\LoginController;
 
 
 /*
@@ -41,3 +42,10 @@ Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.e
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+//ログイン
+//Route::prefix('admin')->name('admin.')->group(function () {
+    //Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    //Route::post('login', [LoginController::class, 'login']);
+    //Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+//});
