@@ -26,5 +26,7 @@ class UserSeeder extends Seeder
             $user->address = "東京都";
             $user->phone_number = "000-0000-0000";
             $user->save();
+
+            User::factory()->count(100)->create();
     }
 }

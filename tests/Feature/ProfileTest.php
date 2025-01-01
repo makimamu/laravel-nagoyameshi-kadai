@@ -11,15 +11,15 @@ class ProfileTest extends TestCase
     use RefreshDatabase;
 
     public function test_profile_page_is_displayed(): void
-    {
-        $user = User::factory()->create();
+{
+    $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->get('/profile');
+    $response = $this
+        ->actingAs($user)
+        ->get(route('profile.edit')); // 修正: ルート名を使用
 
-        $response->assertOk();
-    }
+    $response->assertOk();
+}
 
     public function test_profile_information_can_be_updated(): void
     {
@@ -27,7 +27,7 @@ class ProfileTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/profile', [
+            ->put('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
             ]);
@@ -96,4 +96,5 @@ class ProfileTest extends TestCase
 
         $this->assertNotNull($user->fresh());
     }
+    
 }

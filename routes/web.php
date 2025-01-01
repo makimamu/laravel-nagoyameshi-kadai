@@ -4,7 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\Admin\UserController;
 
 
 /*
@@ -29,3 +29,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
         Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
     });
 Route::middleware(['auth'])->post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+
+Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+});
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+// プロフィール編集用ルート
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
