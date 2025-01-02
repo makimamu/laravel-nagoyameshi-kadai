@@ -8,7 +8,6 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 
 
-
 class AdminSeeder extends Seeder
 {
     /**
@@ -20,6 +19,8 @@ class AdminSeeder extends Seeder
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
         $admin->save();
+
+        
 
     }
 }
