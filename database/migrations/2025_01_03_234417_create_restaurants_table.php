@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestaurants extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -23,10 +23,11 @@ class CreateRestaurants extends Migration
             $table->timestamps(); // 作成日時・更新日時
             //$table->string('image_name')->nullable();// image_nameカラムを設定する
 });
-}
+    }
 
     public function down()
     {
         Schema::dropIfExists('restaurants');
     }
-}
+
+};

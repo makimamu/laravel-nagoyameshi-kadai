@@ -1,36 +1,54 @@
 <?php
-
 namespace Tests\Feature\Admin;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\User; 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
-    }
-    public function test_guest_cannot_access_user_list()
+    public function test_guest_cannot_access_user_list_page()
     {
         $response = $this->get(route('admin.users.index'));
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect(route('login'));
     }
 
-    public function test_admin_can_access_user_list()
+    public function test_normal_user_cannot_access_user_list_page()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('admin.users.index'));
+        $response->assertForbidden();
+    }
+
+    public function test_admin_can_access_user_list_page()
     {
         $admin = User::factory()->create(['is_admin' => true]);
-        $this->actingAs($admin, 'admin');
-
-        $response = $this->get(route('admin.users.index'));
-        $response->assertStatus(200);
+        $response = $this->actingAs($admin)->get(route('admin.users.index'));
+        $response->assertOk();
     }
-    
+
+    public function test_guest_cannot_access_user_detail_page()
+    {
+        $user = User::factory()->create();
+        $response = $this->get(route('admin.users.show', $user));
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_normal_user_cannot_access_user_detail_page()
+    {
+        $user = User::factory()->create();
+        $normalUser = User::factory()->create();
+        $response = $this->actingAs($normalUser)->get(route('admin.users.show', $user));
+        $response->assertForbidden();
+    }
+
+    public function test_admin_can_access_user_detail_page()
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create();
+        $response = $this->actingAs($admin)->get(route('admin.users.show', $user));
+        $response->assertOk();
+    }
 }

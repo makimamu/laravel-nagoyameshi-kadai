@@ -4,7 +4,7 @@
     <div class="container my-4 nagoyameshi-container">
         <div class="row justify-content-center">
             <div class="col-xl-3 col-lg-4 col-md-5 col-sm-7">
-                <h1 class="mb-4 text-center">ログイン</h1>
+                <h1 class="mb-4 text-center">ログインa</h1>
 
                 <hr class="mb-4">
 

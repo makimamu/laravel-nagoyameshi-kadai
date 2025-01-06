@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
     // ログインフォームを表示
     public function showLoginForm()
     {
@@ -35,8 +36,8 @@ class LoginController extends Controller
     }
 
     // ログイン後のリダイレクト先
-    protected function authenticated(Request $request, $user)
-    {
-        return redirect('/dashboard'); // ダッシュボードなどのリダイレクト先
+    protected function redirectTo()
+{
+    return '/admin/users';// ダッシュボードなどのリダイレクト先
+} 
     }
-}

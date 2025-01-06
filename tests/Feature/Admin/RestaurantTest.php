@@ -11,6 +11,9 @@ class RestaurantTest extends TestCase
 {
     use RefreshDatabase;
 
+
+    
+
     public function test_admin_can_access_restaurant_index()
     {
         $admin = User::factory()->create(['is_admin' => true]);
@@ -18,6 +21,8 @@ class RestaurantTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.restaurants.index'));
 
         $response->assertStatus(200);
+        $response->assertOk();
+
     }
 
     public function test_non_admin_cannot_access_restaurant_index()
@@ -29,5 +34,6 @@ class RestaurantTest extends TestCase
         $response->assertStatus(403);  // Forbidden
     }
 
-    // 他のアクションのテストも同様に記述します
+
+    // 他のテストメソッドも同様の形式で作成
 }

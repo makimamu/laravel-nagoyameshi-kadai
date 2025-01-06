@@ -53,7 +53,7 @@
                 <div class="d-flex justify-content-center">
                     {{ $restaurants->appends(request()->query())->links() }}
                 </div>
-            </d>
+            </div>
         </div>
     </div>
 @endsection

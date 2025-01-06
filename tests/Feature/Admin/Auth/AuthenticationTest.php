@@ -12,11 +12,21 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    use RefreshDatabase;
     
+    use RefreshDatabase;
+
+    // setUpメソッドでテスト前の準備を行う
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // 管理者ユーザーを作成
+        $this->admin = Admin::factory()->create([
+            'email' => 'admin@example.com',
+            'password' => bcrypt('nagoyameshi'), // 適切なパスワードを設定
+        ]);
+    }
+
     public function test_login_screen_can_be_rendered(): void
     {
     $response = $this->get('/admin/login');
@@ -25,13 +35,9 @@ class AuthenticationTest extends TestCase
     }
     public function test_admins_can_authenticate_using_the_login_screen(): void
     {
-        $admin = new Admin();
-        $admin->email = 'admin@example.com';
-        $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
         $response = $this->post('/admin/login', [
-            'email' => $admin->email,
-            'password' => 'nagoyameshi',
+            'email' => $this->admin->email,
+            'password' => 'nagoyameshi', // 作成したパスワード
         ]);
         
         $this->assertTrue(Auth::guard('admin')->check());
@@ -53,12 +59,7 @@ class AuthenticationTest extends TestCase
 
     public function test_admins_can_logout(): void
     {
-        $admin = new Admin();
-        $admin->email = 'admin@example.com';
-        $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
-
-        $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
+        $response = $this->actingAs($this->admin, 'admin')->post('/admin/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');
