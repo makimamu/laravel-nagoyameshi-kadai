@@ -20,7 +20,6 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/'; // 遷移先を設定';
     public const ADMIN_HOME = 'admin/home';
 
-
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
