@@ -43,6 +43,7 @@ return [
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
+            'model' => App\Models\Admin::class
         ],
 
     ],

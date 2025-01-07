@@ -12,37 +12,38 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    
     use RefreshDatabase;
-
-    // setUpメソッドでテスト前の準備を行う
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // 管理者ユーザーを作成
-        $this->admin = Admin::factory()->create([
-            'email' => 'admin@example.com',
-            'password' => bcrypt('nagoyameshi'), // 適切なパスワードを設定
-        ]);
-    }
 
     public function test_login_screen_can_be_rendered(): void
     {
-    $response = $this->get('/admin/login');
+        $response = $this->get('/admin/login');
 
         $response->assertStatus(200);
     }
     public function test_admins_can_authenticate_using_the_login_screen(): void
     {
+        // 管理者の作成
+        $admin = new Admin();
+        $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
+
         $response = $this->post('/admin/login', [
-            'email' => $this->admin->email,
-            'password' => 'nagoyameshi', // 作成したパスワード
+            'email' => $admin->email,
+            'password' => 'nagoyameshi',
         ]);
         
-        $this->assertTrue(Auth::guard('admin')->check());
-        $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);
-    }
+    // ログイン試行
+    $response = $this->post(route('admin.login'), [
+        'email' => $admin->email,
+        'password' => 'nagoyameshi',
+    ]);
+    // ログインが成功したか確認
+    $this->assertTrue(Auth::guard('admin')->check());  // 管理者としてログインしていることを確認
+    $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);  // 管理者のホームにリダイレクトされることを確認
+}
+
+
     public function test_admins_can_not_authenticate_with_invalid_password(): void
     {
         $admin = new Admin();
@@ -54,15 +55,19 @@ class AuthenticationTest extends TestCase
             'email' => $admin->email,
             'password' => 'wrong-password',
         ]);
+
         $this->assertGuest();
     }
 
     public function test_admins_can_logout(): void
     {
-        $response = $this->actingAs($this->admin, 'admin')->post('/admin/logout');
+        $admin = new Admin();
+        $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
+        $response = $this->actingAs($admin, 'admin')->post('/admin/logout');//管理者としてログインする」という振る舞いを実現
         $this->assertGuest();
         $response->assertRedirect('/');
     }
 }
-

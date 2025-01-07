@@ -35,7 +35,8 @@ Route::middleware(['guest', 'guest:admin'])->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
     });
-
+    
+//追加
     Route::middleware('guest:admin')->group(function () {
     Route::get('admin/login', [Admin\Auth\AuthenticatedSessionController::class, 'create'])
             ->name('admin.login');
