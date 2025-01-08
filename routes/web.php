@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -41,6 +42,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::get('/dashboard', function () {
+
         return view('admin.dashboard'); // 管理者ホーム画面のビューを指定
     })->name('admin.dashboard');
 
