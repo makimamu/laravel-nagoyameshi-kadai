@@ -24,17 +24,30 @@ class UsersSeeder extends Seeder
     $user->phone_number = "000-0000-0000";
     $user->save();*/
 
+    
+    
     // 2人目
-    $user2 = new User();
-    $user2->name = "花子";
-    $user2->kana = "ハナコ";
-    $user2->email = 'hanako@example.com';
-    $user2->email_verified_at = Carbon::now();
-    $user2->password = Hash::make('password');
-    $user2->postal_code = "1111111";
-    $user2->address = "大阪府";
-    $user2->phone_number = "111-1111-1111";
-    $user2->save();
+    /*$user２= new User();
+    $user２->name = "花子";
+    $user２->kana = "ハナコ";
+    $user２->email = 'hanako@example.com';
+    $user２->email_verified_at = Carbon::now();
+    $user２->password = Hash::make('password');
+    $user２->postal_code = "1111111";
+    $user２->address = "大阪府";
+    $user２->phone_number = "111-1111-1111";
+    $user２->save();*/
+
+$user３ = new User();
+    $user３->name = "会員レビュー";
+    $user３->kana = "カイインレビュー";
+    $user３->email = 'review@example.com';
+    $user３->email_verified_at = Carbon::now();
+    $user３->password = Hash::make('pass123');
+    $user３->postal_code = "0000000";
+    $user３->address = "東京都";
+    $user３->phone_number = "000-0000-0000";
+    $user３->save();
 
     /**
      * Run the database seeds.
