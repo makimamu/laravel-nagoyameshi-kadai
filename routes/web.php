@@ -51,6 +51,7 @@ Route::post('/logout', function () {
     return redirect('/login'); // ログイン画面へリダイレクト
 })->name('logout');
 
+
     //Route::middleware('can:admin')->group(function () {
        // Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
         //Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');

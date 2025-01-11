@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+    if (!Schema::hasTable('users')) {
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // ID
             $table->string('name'); // ユーザー名（漢字）
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->timestamps(); // 作成日時と更新日時
         });
     }
+}
 
     /**
      * Reverse the migrations.
