@@ -24,8 +24,6 @@ class UsersSeeder extends Seeder
     $user->phone_number = "000-0000-0000";
     $user->save();*/
 
-    
-    
     // 2人目
     /*$user２= new User();
     $user２->name = "花子";
@@ -41,9 +39,9 @@ class UsersSeeder extends Seeder
 $user３ = new User();
     $user３->name = "会員レビュー";
     $user３->kana = "カイインレビュー";
-    $user３->email = 'review@example.com';
+    $user３->email = 'user@example.com';
     $user３->email_verified_at = Carbon::now();
-    $user３->password = Hash::make('pass123');
+    $user３->password = Hash::make('nagoyameshi');
     $user３->postal_code = "0000000";
     $user３->address = "東京都";
     $user３->phone_number = "000-0000-0000";
