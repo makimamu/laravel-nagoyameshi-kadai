@@ -2,23 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\RestaurantController;
 
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 // トップページ: 必要に応じて変更
 Route::get('/', function () {
@@ -31,10 +21,7 @@ require __DIR__ . '/auth.php';
 // 管理者ホームページ
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
-    });
-
-     //Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login');
-   // Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+});
 
 // ユーザー管理ルート
 Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
@@ -44,18 +31,23 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
         return view('admin.dashboard'); // 管理者ホーム画面のビューを指定
     })->name('admin.dashboard');
 
-Route::post('/logout', function () {
-    Auth::logout(); // ログアウト処理
-    return redirect('/login'); // ログイン画面へリダイレクト
-})->name('logout');
+    Route::post('/logout', function () {
+        Auth::logout(); // ログアウト処理
+        return redirect('/login'); // ログイン画面へリダイレクト
+    })->name('logout');
+
+    // 会員店舗管理
+    Route::resource('restaurants', RestaurantController::class);
+        });
+
+
+
+
 
     //Route::middleware('can:admin')->group(function () {
        // Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
         //Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');
-    });
-//});
-
-
+    //});
 
 
 // プロフィール関連ルート
