@@ -33,6 +33,7 @@ class UserFactory extends Factory
             'postal_code' => fake()->postcode(),
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),
+            'role' => 'user', // デフォルトは 'user'
         ];
     }
 

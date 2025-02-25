@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\RestaurantController;
-
+use App\Http\Controllers\Admin\CategoryController;
 
 // トップページ: 必要に応じて変更
 Route::get('/', function () {
@@ -18,9 +18,35 @@ Route::get('/', function () {
 
 // 認証関連のルートを読み込み
 require __DIR__ . '/auth.php';
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+
+    // 管理者ホームページ
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // ユーザー管理
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+
+    // ダッシュボード
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+// ログアウト
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // 会員店舗管理
+    Route::resource('restaurants', RestaurantController::class);
+
+    // カテゴリ管理 (管理者のみアクセス可能)
+        Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+});
+
+
+
 
 // 管理者ホームページ
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
+/*Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
 });
 
@@ -41,11 +67,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     // 会員店舗管理
     Route::resource('restaurants', RestaurantController::class);
         });
-
-
-
-
-
+//コントローラに定義したアクションに対するルーティング
+        Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
+            Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+        });
+    });
+*/
 
     //Route::middleware('can:admin')->group(function () {
        // Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');

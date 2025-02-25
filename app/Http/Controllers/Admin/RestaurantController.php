@@ -113,4 +113,5 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
             ->route('admin.restaurants.index')
             ->with('flash_message', '店舗を削除しました。');
     }
-}
+
+    }
