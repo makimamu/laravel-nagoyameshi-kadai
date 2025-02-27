@@ -22,7 +22,7 @@ class AdminSeeder extends Seeder
 
         $admin = new Admin();
         $admin->email = 'review@example.com';
-        $admin->password = Hash::make('nagomesi');
+        $admin->password = Hash::make('nagomeshi');
         $admin->save();
 
     }
