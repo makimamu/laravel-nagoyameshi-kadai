@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
-class RestaurantController extends Controller//class.子クラス.extends.親クラス【継承】
+class RestaurantController extends Controller
 {
     // 店舗一覧ページ
     public function index(Request $request)
@@ -33,7 +34,8 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
     // 店舗登録ページ
     public function create()
     {
-        return view('admin.restaurants.create');
+        $categories = Category::all();
+        return view('admin.restaurants.create', compact('categories'));
     }
 
     // 店舗登録機能
@@ -52,16 +54,21 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
             'seating_capacity' => 'required|integer|min:0',
         ]);
 
-        $restaurant = new Restaurant($validated);
+        // レストランを作成
+        $restaurant = Restaurant::create($validated);
 
+        // 画像の処理
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/restaurants');
             $restaurant->image = basename($path);
-        } else {
-            $restaurant->image = '';
+            $restaurant->save();
         }
 
-        $restaurant->save();
+        // category_ids を取得し、空の値を取り除く
+        $category_ids = array_filter($request->input('category_ids', []));
+
+        // カテゴリの紐付け
+        $restaurant->categories()->sync($category_ids);
 
         return redirect()
             ->route('admin.restaurants.index')
@@ -70,10 +77,12 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
 
     // 店舗編集ページ
     public function edit(Restaurant $restaurant)
-    {
-        return view('admin.restaurants.edit', compact('restaurant'));
-    }
+{
+    $categories = Category::all();
+    $category_ids = $restaurant->categories->pluck('id')->toArray(); // ここでカテゴリIDの配列を取得
 
+    return view('admin.restaurants.edit', compact('restaurant', 'categories', 'category_ids'));
+}
     // 店舗更新機能
     public function update(Request $request, Restaurant $restaurant)
     {
@@ -90,14 +99,20 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
             'seating_capacity' => 'required|integer|min:0',
         ]);
 
-        $restaurant->fill($validated);
+        $restaurant->update($validated);
 
+        // 画像の処理
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/restaurants');
             $restaurant->image = basename($path);
+            $restaurant->save();
         }
 
-        $restaurant->save();
+        // category_ids を取得し、空の値を取り除く
+        $category_ids = array_filter($request->input('category_ids', []));
+
+        // カテゴリの紐付けを更新
+        $restaurant->categories()->sync($category_ids);
 
         return redirect()
             ->route('admin.restaurants.index')
@@ -113,5 +128,4 @@ class RestaurantController extends Controller//class.子クラス.extends.親ク
             ->route('admin.restaurants.index')
             ->with('flash_message', '店舗を削除しました。');
     }
-
-    }
+}
