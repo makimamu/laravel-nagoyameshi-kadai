@@ -45,7 +45,6 @@ return [
             'provider' => 'admins',
             'model' => App\Models\Admin::class
         ],
-
     ],
 
     /*

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\RestaurantController;
 use App\Http\Controllers\Admin\CategoryController;
 
+
 // トップページ: 必要に応じて変更
 Route::get('/', function () {
     return view('welcome');
@@ -40,6 +41,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // カテゴリ管理 (管理者のみアクセス可能)
         Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+    
 });
 
 

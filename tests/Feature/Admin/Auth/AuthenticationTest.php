@@ -59,6 +59,8 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    
+
     public function test_admins_can_logout(): void
     {
         $admin = new Admin();
@@ -66,8 +68,16 @@ class AuthenticationTest extends TestCase
         $admin->password = Hash::make('nagoyameshi');
         $admin->save();
 
-        $response = $this->actingAs($admin, 'admin')->post('/admin/logout');//管理者としてログインする」という振る舞いを実現
-        $this->assertGuest();
-        $response->assertRedirect('/');
+        // 管理者としてログイン
+    $this->actingAs($admin, 'admin');
+
+    // ログアウトリクエストを送信
+    $response = $this->post('/admin/logout');
+
+    // 管理者ガードでユーザーが認証されていないことを確認
+    $this->assertGuest('admin');
+
+    // リダイレクト先を確認
+    $response->assertRedirect('/');
     }
 }

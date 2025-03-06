@@ -126,6 +126,28 @@
 
                     <div class="row pb-2 mb-2 border-bottom">
                         <div class="col-2">
+                            <span class="fw-bold">定休日</span>
+                        </div>
+
+                        <div class="col d-flex">
+                        @if ($restaurant->regularHolidays->isNotEmpty())
+                                @foreach ($restaurant->regularHolidays->sortBy('regular_holiday_id') as $index => $regular_holiday)
+                                    <div>
+                                        @if ($index === 0)
+                                            {{ $regular_holiday->day }}
+                                        @else
+                                            {{ '、' . $regular_holiday->day }}
+                                        @endif
+                                    </div>
+                                @endforeach
+                            @else
+                                <span>年中無休</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="row pb-2 mb-2 border-bottom">
+                        <div class="col-2">
                             <span class="fw-bold">座席数</span>
                         </div>
 

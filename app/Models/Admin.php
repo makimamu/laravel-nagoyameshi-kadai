@@ -17,6 +17,7 @@ class Admin extends Authenticatable
       * @var array<int, string>
       
       */
+    //protected $guard = 'admin';
     protected $fillable = [
         'email',
         'password',
@@ -32,4 +33,7 @@ class Admin extends Authenticatable
         'remember_token',
     ];
 
+    
 }
+
+
