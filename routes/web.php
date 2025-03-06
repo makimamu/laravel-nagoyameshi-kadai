@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 // 認証関連のルートを読み込み
 require __DIR__ . '/auth.php';
+
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
 
     // 管理者ホームページ

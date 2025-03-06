@@ -45,16 +45,12 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout(): void
     {
-        // 管理者としてログイン
-    $this->actingAs($admin, 'admin');
+        $user = User::factory()->create();
 
-    // ログアウトリクエストを送信
-    $response = $this->post('/admin/logout');
+        $response = $this->actingAs($user)->post('/logout');
 
-    // 管理者ガードでユーザーが認証されていないことを確認
-    $this->assertGuest('admin');
-
-    // リダイレクト先を確認
-    $response->assertRedirect('/');
+        $this->assertGuest();
+        $response->assertRedirect('/');
     }
-}
+    }
+

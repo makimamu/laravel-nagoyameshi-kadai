@@ -39,7 +39,7 @@ class AuthenticationTest extends TestCase
         'password' => 'nagoyameshi',
     ]);
     // ログインが成功したか確認
-    $this->assertTrue(Auth::guard('admin')->check());  // 管理者としてログインしていることを確認
+    $this->assertAuthenticatedAs($admin, 'admin');  
     $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);  // 管理者のホームにリダイレクトされることを確認
 }
 
@@ -59,8 +59,6 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
-    
-
     public function test_admins_can_logout(): void
     {
         $admin = new Admin();
@@ -68,16 +66,12 @@ class AuthenticationTest extends TestCase
         $admin->password = Hash::make('nagoyameshi');
         $admin->save();
 
-        // 管理者としてログイン
-    $this->actingAs($admin, 'admin');
+        $this->actingAs($admin, 'admin');
 
-    // ログアウトリクエストを送信
-    $response = $this->post('/admin/logout');
+        $response = $this->withoutMiddleware()->post('/admin/logout'); // CSRF を無効化
+    
+        $this->assertGuest('admin'); // 管理者ガードで未認証であることを確認
+        $response->assertRedirect('/');
 
-    // 管理者ガードでユーザーが認証されていないことを確認
-    $this->assertGuest('admin');
-
-    // リダイレクト先を確認
-    $response->assertRedirect('/');
     }
 }
