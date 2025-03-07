@@ -68,10 +68,15 @@ class AuthenticationTest extends TestCase
 
         $this->actingAs($admin, 'admin');
 
-        $response = $this->withoutMiddleware()->post('/admin/logout'); // CSRF を無効化
-    
-        $this->assertGuest('admin'); // 管理者ガードで未認証であることを確認
-        $response->assertRedirect('/');
+            // セッションに CSRF トークンをセット
+    $token = csrf_token();
+    session(['_token' => $token]);
 
+    // CSRF トークンを含めた状態で POST リクエストを送信
+    $response = $this->post('/admin/logout', ['_token' => $token]);
+
+    // 管理者ガードで認証されていないことを確認
+    $this->assertGuest('admin');
+    $response->assertRedirect('/');
     }
 }

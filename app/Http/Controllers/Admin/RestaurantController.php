@@ -75,7 +75,7 @@ class RestaurantController extends Controller
 
         // 定休日の関連付け
         if (isset($validated['regular_holiday_ids'])) {
-            $restaurant->regularHolidays()->sync($validated['regular_holiday_ids']);
+            $restaurant->regular_Holidays()->sync($validated['regular_holiday_ids']);
         }
 
         return redirect()
@@ -126,9 +126,9 @@ class RestaurantController extends Controller
 
         // 定休日の関連付けを同期
         if (isset($validated['regular_holiday_ids'])) {
-            $restaurant->regularHolidays()->sync($validated['regular_holiday_ids']);
+            $restaurant->regular_Holidays()->sync($validated['regular_holiday_ids']);
         } else {
-            $restaurant->regularHolidays()->detach();
+            $restaurant->regular_Holidays()->detach();
         }
 
         return redirect()
