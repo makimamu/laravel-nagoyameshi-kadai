@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kana')->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_admin')->default(1); // 追加
             $table->rememberToken();
             $table->timestamps();
         });

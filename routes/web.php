@@ -21,6 +21,8 @@ Route::group(['middleware' => 'guest:admin'], function () {
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+    // 管理者ホーム
+    Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
 
     // ユーザー管理
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

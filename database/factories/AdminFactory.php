@@ -26,6 +26,8 @@ class AdminFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(), // Fakerでユニークなメールアドレスを生成
             'password' => Hash::make('password'), // ハッシュ化したデフォルトパスワード
             'is_admin' => true, // 管理者フラグ（true固定）
+            
         ];
+
     }
 }
