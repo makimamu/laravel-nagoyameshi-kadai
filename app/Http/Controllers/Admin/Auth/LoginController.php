@@ -1,19 +1,19 @@
 <?php
-
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
 
 class LoginController extends Controller
 {
-
     // ログイン後のリダイレクト先
-    //protected $redirectTo = '/admin/dashboard'; // 管理者ホーム画面のルートを指定
+    protected $redirectTo = '/admin/dashboard';
+
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest:admin')->except('logout');
     }
 
     public function showLoginForm()
@@ -21,18 +21,29 @@ class LoginController extends Controller
         return view('admin.auth.login');
     }
 
-    public function login()
+    public function login(Request $request)
     {
-        // ログイン処理
-        return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended($this->redirectTo);
+        }
+
+        return back()->withErrors([
+            'email' => 'ログイン情報が正しくありません。',
+        ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // ログアウト処理
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/admin/login');
     }
-
-       // ログイン後のリダイレクト先
-       protected $redirectTo = '/admin/dashboard'; // 管理者ホーム画面のルートを指定
-
 }

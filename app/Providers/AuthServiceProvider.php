@@ -10,6 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Admin;
+use App\Policies\AdminPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {

@@ -1,16 +1,20 @@
 <?php
+namespace App\Http\Controllers\Admin;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController as UserHomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\RestaurantController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\TermController;
+
 
 // 認証関連のルートを読み込み
 require __DIR__ . '/auth.php';
@@ -21,6 +25,7 @@ Route::group(['middleware' => 'guest:admin'], function () {
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+
     // 管理者ホーム
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
 
